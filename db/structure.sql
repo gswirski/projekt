@@ -391,6 +391,13 @@ CREATE INDEX index_meals_on_user_id ON meals USING btree (user_id);
 
 
 --
+-- Name: index_products_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_products_on_name ON products USING btree (name);
+
+
+--
 -- Name: index_products_on_vendor_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -430,6 +437,13 @@ CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
 --
 
 CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
+
+
+--
+-- Name: index_vendors_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_vendors_on_name ON vendors USING btree (name);
 
 
 --
@@ -545,3 +559,5 @@ INSERT INTO schema_migrations (version) VALUES ('20141221115235');
 INSERT INTO schema_migrations (version) VALUES ('20141221115805');
 
 INSERT INTO schema_migrations (version) VALUES ('20141221121131');
+
+INSERT INTO schema_migrations (version) VALUES ('20141221130720');
