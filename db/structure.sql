@@ -30,6 +30,57 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: meal_products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE meal_products (
+    meal_id integer NOT NULL,
+    product_id integer NOT NULL,
+    amount numeric(10,2) DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: meal_recipes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE meal_recipes (
+    meal_id integer NOT NULL,
+    recipe_id integer NOT NULL
+);
+
+
+--
+-- Name: meals; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE meals (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    date timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: meals_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE meals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: meals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE meals_id_seq OWNED BY meals.id;
+
+
+--
 -- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -63,6 +114,47 @@ CREATE SEQUENCE products_id_seq
 --
 
 ALTER SEQUENCE products_id_seq OWNED BY products.id;
+
+
+--
+-- Name: recipe_products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE recipe_products (
+    recipe_id integer NOT NULL,
+    product_id integer NOT NULL,
+    amount numeric(10,2) DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: recipes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE recipes (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+--
+-- Name: recipes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE recipes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: recipes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE recipes_id_seq OWNED BY recipes.id;
 
 
 --
@@ -149,7 +241,7 @@ ALTER SEQUENCE vendors_id_seq OWNED BY vendors.id;
 CREATE TABLE weights (
     id integer NOT NULL,
     user_id integer NOT NULL,
-    weight numeric(5,2),
+    weight numeric(5,2) NOT NULL,
     created_at timestamp without time zone NOT NULL
 );
 
@@ -177,7 +269,21 @@ ALTER SEQUENCE weights_id_seq OWNED BY weights.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY meals ALTER COLUMN id SET DEFAULT nextval('meals_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY recipes ALTER COLUMN id SET DEFAULT nextval('recipes_id_seq'::regclass);
 
 
 --
@@ -202,11 +308,27 @@ ALTER TABLE ONLY weights ALTER COLUMN id SET DEFAULT nextval('weights_id_seq'::r
 
 
 --
+-- Name: meals_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY meals
+    ADD CONSTRAINT meals_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY products
     ADD CONSTRAINT products_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: recipes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY recipes
+    ADD CONSTRAINT recipes_pkey PRIMARY KEY (id);
 
 
 --
@@ -234,10 +356,66 @@ ALTER TABLE ONLY weights
 
 
 --
+-- Name: index_meal_products_on_meal_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meal_products_on_meal_id ON meal_products USING btree (meal_id);
+
+
+--
+-- Name: index_meal_products_on_product_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meal_products_on_product_id ON meal_products USING btree (product_id);
+
+
+--
+-- Name: index_meal_recipes_on_meal_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meal_recipes_on_meal_id ON meal_recipes USING btree (meal_id);
+
+
+--
+-- Name: index_meal_recipes_on_recipe_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meal_recipes_on_recipe_id ON meal_recipes USING btree (recipe_id);
+
+
+--
+-- Name: index_meals_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_meals_on_user_id ON meals USING btree (user_id);
+
+
+--
 -- Name: index_products_on_vendor_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_products_on_vendor_id ON products USING btree (vendor_id);
+
+
+--
+-- Name: index_recipe_products_on_product_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_recipe_products_on_product_id ON recipe_products USING btree (product_id);
+
+
+--
+-- Name: index_recipe_products_on_recipe_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_recipe_products_on_recipe_id ON recipe_products USING btree (recipe_id);
+
+
+--
+-- Name: index_recipes_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_recipes_on_user_id ON recipes USING btree (user_id);
 
 
 --
@@ -269,11 +447,75 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
+-- Name: meal_products_meal_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY meal_products
+    ADD CONSTRAINT meal_products_meal_id_fk FOREIGN KEY (meal_id) REFERENCES meals(id) ON DELETE CASCADE;
+
+
+--
+-- Name: meal_products_product_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY meal_products
+    ADD CONSTRAINT meal_products_product_id_fk FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE;
+
+
+--
+-- Name: meal_recipes_meal_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY meal_recipes
+    ADD CONSTRAINT meal_recipes_meal_id_fk FOREIGN KEY (meal_id) REFERENCES meals(id) ON DELETE CASCADE;
+
+
+--
+-- Name: meal_recipes_recipe_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY meal_recipes
+    ADD CONSTRAINT meal_recipes_recipe_id_fk FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE;
+
+
+--
+-- Name: meals_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY meals
+    ADD CONSTRAINT meals_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+
+--
 -- Name: products_vendor_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY products
     ADD CONSTRAINT products_vendor_id_fk FOREIGN KEY (vendor_id) REFERENCES vendors(id);
+
+
+--
+-- Name: recipe_products_product_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY recipe_products
+    ADD CONSTRAINT recipe_products_product_id_fk FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE;
+
+
+--
+-- Name: recipe_products_recipe_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY recipe_products
+    ADD CONSTRAINT recipe_products_recipe_id_fk FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE;
+
+
+--
+-- Name: recipes_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY recipes
+    ADD CONSTRAINT recipes_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 
 --
@@ -301,3 +543,5 @@ INSERT INTO schema_migrations (version) VALUES ('20141221113219');
 INSERT INTO schema_migrations (version) VALUES ('20141221115235');
 
 INSERT INTO schema_migrations (version) VALUES ('20141221115805');
+
+INSERT INTO schema_migrations (version) VALUES ('20141221121131');

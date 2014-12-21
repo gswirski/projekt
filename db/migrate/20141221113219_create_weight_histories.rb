@@ -3,7 +3,7 @@ class CreateWeightHistories < ActiveRecord::Migration
     create_table :weights do |t|
       t.integer :user_id, null: false
       t.foreign_key :users, dependent: :delete
-      t.decimal :weight, precision: 5, scale: 2
+      t.decimal :weight, precision: 5, scale: 2, null: false
       t.datetime :created_at, null: false
     end
 
