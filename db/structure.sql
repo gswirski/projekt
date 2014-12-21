@@ -30,6 +30,42 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE products (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    serving_size numeric(10,2) NOT NULL,
+    serving_unit character varying(255) NOT NULL,
+    calories numeric(10,2) NOT NULL,
+    fat numeric(10,2) NOT NULL,
+    carbs numeric(10,2) NOT NULL,
+    proteins numeric(10,2) NOT NULL,
+    vendor_id integer NOT NULL
+);
+
+
+--
+-- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE products_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE products_id_seq OWNED BY products.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -77,14 +113,44 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
+-- Name: vendors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE vendors (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    address text
+);
+
+
+--
+-- Name: vendors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE vendors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: vendors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE vendors_id_seq OWNED BY vendors.id;
+
+
+--
 -- Name: weights; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE TABLE weights (
     id integer NOT NULL,
-    user_id integer,
+    user_id integer NOT NULL,
     weight numeric(5,2),
-    created_at timestamp without time zone
+    created_at timestamp without time zone NOT NULL
 );
 
 
@@ -111,6 +177,13 @@ ALTER SEQUENCE weights_id_seq OWNED BY weights.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
@@ -118,7 +191,22 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY vendors ALTER COLUMN id SET DEFAULT nextval('vendors_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY weights ALTER COLUMN id SET DEFAULT nextval('weights_id_seq'::regclass);
+
+
+--
+-- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY products
+    ADD CONSTRAINT products_pkey PRIMARY KEY (id);
 
 
 --
@@ -130,11 +218,26 @@ ALTER TABLE ONLY users
 
 
 --
+-- Name: vendors_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY vendors
+    ADD CONSTRAINT vendors_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: weights_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY weights
     ADD CONSTRAINT weights_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_products_on_vendor_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_products_on_vendor_id ON products USING btree (vendor_id);
 
 
 --
@@ -166,11 +269,19 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
+-- Name: products_vendor_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY products
+    ADD CONSTRAINT products_vendor_id_fk FOREIGN KEY (vendor_id) REFERENCES vendors(id);
+
+
+--
 -- Name: weights_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY weights
-    ADD CONSTRAINT weights_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
+    ADD CONSTRAINT weights_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 
 --
@@ -186,3 +297,7 @@ INSERT INTO schema_migrations (version) VALUES ('20141221111736');
 INSERT INTO schema_migrations (version) VALUES ('20141221112943');
 
 INSERT INTO schema_migrations (version) VALUES ('20141221113219');
+
+INSERT INTO schema_migrations (version) VALUES ('20141221115235');
+
+INSERT INTO schema_migrations (version) VALUES ('20141221115805');
