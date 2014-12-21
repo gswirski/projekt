@@ -77,10 +77,48 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
+-- Name: weights; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE weights (
+    id integer NOT NULL,
+    user_id integer,
+    weight numeric(5,2),
+    created_at timestamp without time zone
+);
+
+
+--
+-- Name: weights_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE weights_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: weights_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE weights_id_seq OWNED BY weights.id;
+
+
+--
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY weights ALTER COLUMN id SET DEFAULT nextval('weights_id_seq'::regclass);
 
 
 --
@@ -89,6 +127,14 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: weights_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY weights
+    ADD CONSTRAINT weights_pkey PRIMARY KEY (id);
 
 
 --
@@ -106,10 +152,25 @@ CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (re
 
 
 --
+-- Name: index_weights_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_weights_on_user_id ON weights USING btree (user_id);
+
+
+--
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
+
+
+--
+-- Name: weights_user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY weights
+    ADD CONSTRAINT weights_user_id_fk FOREIGN KEY (user_id) REFERENCES users(id);
 
 
 --
@@ -123,3 +184,5 @@ INSERT INTO schema_migrations (version) VALUES ('20141221111734');
 INSERT INTO schema_migrations (version) VALUES ('20141221111736');
 
 INSERT INTO schema_migrations (version) VALUES ('20141221112943');
+
+INSERT INTO schema_migrations (version) VALUES ('20141221113219');
