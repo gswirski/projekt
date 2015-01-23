@@ -4,6 +4,11 @@ class Meal < ActiveRecord::Base
   has_many :meal_recipes
   has_many :recipes, through: :meal_recipes
 
+  has_one :details, class_name: MealDetail,
+                    foreign_key: 'id'
+
+  default_scope { includes(:details) }
+
   default_value_for :date do
     Time.now
   end

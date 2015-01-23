@@ -99,44 +99,6 @@ CREATE TABLE meals (
 
 
 --
--- Name: meals_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE meals_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: meals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE meals_id_seq OWNED BY meals.id;
-
-
---
--- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE products_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE products_id_seq OWNED BY products.id;
-
-
---
 -- Name: recipe_products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -193,6 +155,77 @@ CREATE VIEW recipe_details AS
    FROM (recipes r
      LEFT JOIN recipe_product_details p ON ((r.id = p.recipe_id)))
   GROUP BY r.id, r.name;
+
+
+--
+-- Name: meal_details; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW meal_details AS
+ SELECT m.id,
+    m.date,
+    sum(u.products) AS products,
+    sum(u.calories) AS calories,
+    sum(u.fat) AS fat,
+    sum(u.carbs) AS carbs,
+    sum(u.proteins) AS proteins
+   FROM (meals m
+     LEFT JOIN ( SELECT mr.meal_id,
+            r.products,
+            r.calories,
+            r.fat,
+            r.carbs,
+            r.proteins
+           FROM (recipe_details r
+             JOIN meal_recipes mr ON ((r.id = mr.recipe_id)))
+        UNION ALL
+         SELECT mp.meal_id,
+            count(mp.product_id) AS products,
+            sum(mp.calories) AS calories,
+            sum(mp.fat) AS fat,
+            sum(mp.carbs) AS carbs,
+            sum(mp.proteins) AS proteins
+           FROM meal_product_details mp
+          GROUP BY mp.meal_id) u ON ((m.id = u.meal_id)))
+  GROUP BY m.id, m.date;
+
+
+--
+-- Name: meals_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE meals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: meals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE meals_id_seq OWNED BY meals.id;
+
+
+--
+-- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE products_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE products_id_seq OWNED BY products.id;
 
 
 --
@@ -692,3 +725,5 @@ INSERT INTO schema_migrations (version) VALUES ('20150123185420');
 INSERT INTO schema_migrations (version) VALUES ('20150123191404');
 
 INSERT INTO schema_migrations (version) VALUES ('20150123192755');
+
+INSERT INTO schema_migrations (version) VALUES ('20150123194218');

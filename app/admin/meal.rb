@@ -11,21 +11,29 @@ ActiveAdmin.register Meal do
     column :date do |m|
       link_to I18n.l(m.date, format: :short), meal_path(m)
     end
+    column :products do |m| m.details.products end
+    column :calories do |m| m.details.calories end
+    column :fat do |m| m.details.fat end
+    column :carbs do |m| m.details.carbs end
+    column :proteins do |m| m.details.proteins end
     actions
   end
 
   show do
-    #attributes_table do
-      #row :products do meal.details.products end
-      #row :calories do meal.details.calories end
-      #row :fat do meal.details.fat end
-      #row :carbs do meal.details.carbs end
-      #row :proteins do meal.details.proteins end
-    #end
+    attributes_table do
+      row :products do meal.details.products end
+      row :calories do meal.details.calories end
+      row :fat do meal.details.fat end
+      row :carbs do meal.details.carbs end
+      row :proteins do meal.details.proteins end
+    end
 
     panel "Recipes" do
       table_for meal.recipes do
-        column :name
+        column :recipe do |mr|
+          link_to mr.name, recipe_path(mr)
+        end
+        column :products do |mr| mr.details.products end
         column :calories do |mr| mr.details.calories end
         column :fat do |mr| mr.details.fat end
         column :carbs do |mr| mr.details.carbs end
