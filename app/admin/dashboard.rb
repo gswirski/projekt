@@ -17,7 +17,7 @@ ActiveAdmin.register_page "Dashboard" do
     columns do
       column do
         panel "Recent Meals" do
-          table_for Meal.where(user_id: current_user.id).order("id desc").limit(5) do
+          table_for current_user.meals.order("id desc").limit(5) do
             column :name do |m|
               link_to(I18n.l(m.date, format: :short), meal_path(m))
             end
@@ -35,7 +35,7 @@ ActiveAdmin.register_page "Dashboard" do
 
       column do
         panel "Recent Recipes" do
-          table_for Recipe.where(user_id: current_user.id).order("id desc").limit(5) do
+          table_for current_user.recipes.order("id desc").limit(5) do
             column :name do |r|
               link_to(r.name, recipe_path(r))
             end
