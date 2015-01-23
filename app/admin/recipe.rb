@@ -7,13 +7,24 @@ ActiveAdmin.register Recipe do
   end
 
   show do
+    attributes_table do
+      row :products do
+        5
+      end
+      row :calories do
+        #recipe.details.calories
+        500
+      end
+    end
+
     panel "Products" do
       table_for recipe.recipe_products do
         column :product
-        column :serving do |rp|
-          p = rp.product
-          "#{p.serving_size * rp.amount} #{p.serving_unit}"
-        end
+        column :serving_size do |rp| "#{rp.details.serving_size} #{rp.details.serving_unit}" end
+        column :calories do |rp| rp.details.calories end
+        column :fat do |rp| rp.details.fat end
+        column :carbs do |rp| rp.details.carbs end
+        column :proteins do |rp| rp.details.proteins end
         column :actions do |rp|
           link_to("Edit", edit_recipe_recipe_product_path(recipe_id: recipe.id, id: rp.product_id)) + " " +
           link_to("Delete", recipe_recipe_product_path(recipe_id: recipe.id, id: rp.product_id), method: :delete, confirm: "Are you sure?")

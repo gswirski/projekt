@@ -152,6 +152,26 @@ CREATE VIEW recipe_details AS
 
 
 --
+-- Name: recipe_product_details; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW recipe_product_details AS
+ SELECT r.recipe_id,
+    p.vendor_id,
+    r.product_id,
+    r.amount,
+    p.name,
+    (p.serving_size * r.amount) AS serving_size,
+    p.serving_unit,
+    (p.calories * r.amount) AS calories,
+    (p.fat * r.amount) AS fat,
+    (p.carbs * r.amount) AS carbs,
+    (p.proteins * r.amount) AS proteins
+   FROM (recipe_products r
+     JOIN products p ON ((p.id = r.product_id)));
+
+
+--
 -- Name: recipes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -640,3 +660,5 @@ INSERT INTO schema_migrations (version) VALUES ('20150122211732');
 INSERT INTO schema_migrations (version) VALUES ('20150123171037');
 
 INSERT INTO schema_migrations (version) VALUES ('20150123172720');
+
+INSERT INTO schema_migrations (version) VALUES ('20150123180654');
