@@ -209,7 +209,8 @@ CREATE TABLE users (
     current_sign_in_at timestamp without time zone,
     last_sign_in_at timestamp without time zone,
     current_sign_in_ip character varying(255),
-    last_sign_in_ip character varying(255)
+    last_sign_in_ip character varying(255),
+    CONSTRAINT check_email CHECK (((email)::text ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'::text))
 );
 
 
@@ -637,3 +638,5 @@ INSERT INTO schema_migrations (version) VALUES ('20141221131345');
 INSERT INTO schema_migrations (version) VALUES ('20150122211732');
 
 INSERT INTO schema_migrations (version) VALUES ('20150123171037');
+
+INSERT INTO schema_migrations (version) VALUES ('20150123172720');
