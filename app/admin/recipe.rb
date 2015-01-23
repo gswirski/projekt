@@ -1,6 +1,7 @@
 ActiveAdmin.register Recipe do
   filter :name
   permit_params :name
+
   scope_to do
     current_user
   end
@@ -11,14 +12,15 @@ ActiveAdmin.register Recipe do
         column :product
         column :serving do |rp|
           p = rp.product
-          "#{p.serving_size} #{p.serving_unit}  x #{rp.amount}"
+          "#{p.serving_size * rp.amount} #{p.serving_unit}"
         end
         column :actions do |rp|
-          link_to "Edit", edit_admin_recipe_recipe_product_path(recipe_id: recipe.id, id: rp.product_id)
+          link_to("Edit", edit_recipe_recipe_product_path(recipe_id: recipe.id, id: rp.product_id)) + " " +
+          link_to("Delete", recipe_recipe_product_path(recipe_id: recipe.id, id: rp.product_id), method: :delete, confirm: "Are you sure?")
         end
       end
       div do
-        link_to "Add product", new_admin_recipe_recipe_product_path(recipe), class: "button"
+        link_to "Add product", new_recipe_recipe_product_path(recipe), class: "button"
       end
     end
   end
