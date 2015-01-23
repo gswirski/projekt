@@ -41,6 +41,43 @@ CREATE TABLE meal_products (
 
 
 --
+-- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE products (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    serving_size numeric(10,2) NOT NULL,
+    serving_unit character varying(255) NOT NULL,
+    calories numeric(10,2) NOT NULL,
+    fat numeric(10,2) NOT NULL,
+    carbs numeric(10,2) NOT NULL,
+    proteins numeric(10,2) NOT NULL,
+    vendor_id integer NOT NULL
+);
+
+
+--
+-- Name: meal_product_details; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW meal_product_details AS
+ SELECT r.meal_id,
+    p.vendor_id,
+    r.product_id,
+    r.amount,
+    p.name,
+    (p.serving_size * r.amount) AS serving_size,
+    p.serving_unit,
+    (p.calories * r.amount) AS calories,
+    (p.fat * r.amount) AS fat,
+    (p.carbs * r.amount) AS carbs,
+    (p.proteins * r.amount) AS proteins
+   FROM (meal_products r
+     JOIN products p ON ((p.id = r.product_id)));
+
+
+--
 -- Name: meal_recipes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -78,23 +115,6 @@ CREATE SEQUENCE meals_id_seq
 --
 
 ALTER SEQUENCE meals_id_seq OWNED BY meals.id;
-
-
---
--- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE products (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    serving_size numeric(10,2) NOT NULL,
-    serving_unit character varying(255) NOT NULL,
-    calories numeric(10,2) NOT NULL,
-    fat numeric(10,2) NOT NULL,
-    carbs numeric(10,2) NOT NULL,
-    proteins numeric(10,2) NOT NULL,
-    vendor_id integer NOT NULL
-);
 
 
 --
@@ -670,3 +690,5 @@ INSERT INTO schema_migrations (version) VALUES ('20150123180654');
 INSERT INTO schema_migrations (version) VALUES ('20150123185420');
 
 INSERT INTO schema_migrations (version) VALUES ('20150123191404');
+
+INSERT INTO schema_migrations (version) VALUES ('20150123192755');
