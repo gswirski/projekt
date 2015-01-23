@@ -58,6 +58,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.8.0)
+    default_value_for (3.0.1)
+      activerecord (>= 3.2.0, < 5.0)
     devise (3.2.4)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -165,6 +167,7 @@ PLATFORMS
 DEPENDENCIES
   activeadmin!
   coffee-rails (~> 4.0.0)
+  default_value_for (~> 3.0.0)
   devise
   foreigner
   jbuilder (~> 1.2)

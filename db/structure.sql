@@ -57,7 +57,7 @@ CREATE TABLE meal_recipes (
 CREATE TABLE meals (
     id integer NOT NULL,
     user_id integer NOT NULL,
-    date timestamp without time zone NOT NULL
+    date timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -668,3 +668,5 @@ INSERT INTO schema_migrations (version) VALUES ('20150123172720');
 INSERT INTO schema_migrations (version) VALUES ('20150123180654');
 
 INSERT INTO schema_migrations (version) VALUES ('20150123185420');
+
+INSERT INTO schema_migrations (version) VALUES ('20150123191404');

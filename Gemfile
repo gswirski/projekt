@@ -8,6 +8,7 @@ gem 'pg'
 gem 'foreigner'
 gem 'devise'
 gem 'activeadmin', github: 'activeadmin'
+gem "default_value_for", "~> 3.0.0"
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.2'
