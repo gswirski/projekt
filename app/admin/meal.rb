@@ -23,25 +23,24 @@ ActiveAdmin.register Meal do
       #row :proteins do meal.details.proteins end
     #end
 
-    #panel "Recipes" do
-      #table_for meal.meal_recipes do
-        #column :product
-        #column :serving_size do |mr| "#{mr.details.serving_size} #{mr.details.serving_unit}" end
-        #column :calories do |mr| mr.details.calories end
-        #column :fat do |mr| mr.details.fat end
-        #column :carbs do |mr| mr.details.carbs end
-        #column :proteins do |mr| mr.details.proteins end
-        #column :actions do |mr|
-          #link_to("Edit", edit_meal_meal_product_path(meal_id: meal.id, id: mr.product_id)) + " " +
-          #link_to("Delete", meal_meal_product_path(meal_id: meal.id, id: mr.product_id), method: :delete, confirm: "Are you sure?")
-        #end
-      #end
-      #div do
-        #link_to "Add recipe", new_meal_meal_recipe_path(meal), class: "button"
-      #end
-    #end
+    panel "Recipes" do
+      table_for meal.recipes do
+        column :name
+        column :calories do |mr| mr.details.calories end
+        column :fat do |mr| mr.details.fat end
+        column :carbs do |mr| mr.details.carbs end
+        column :proteins do |mr| mr.details.proteins end
+        column :actions do |mr|
+          link_to("Edit", edit_meal_meal_recipe_path(meal_id: meal.id, id: mr.id)) + " " +
+          link_to("Delete", meal_meal_recipe_path(meal_id: meal.id, id: mr.id), method: :delete, confirm: "Are you sure?")
+        end
+      end
+      div do
+        link_to "Add recipe", new_meal_meal_recipe_path(meal), class: "button"
+      end
+    end
 
-    panel "Products" do
+    panel "Additional products" do
       table_for meal.meal_products do
         column :product
         column :serving_size do |mp| "#{mp.details.serving_size} #{mp.details.serving_unit}" end
