@@ -128,30 +128,6 @@ CREATE TABLE recipe_products (
 
 
 --
--- Name: recipes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE recipes (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    name character varying(255) NOT NULL
-);
-
-
---
--- Name: recipe_details; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW recipe_details AS
- SELECT r.id,
-    r.name,
-    count(p.product_id) AS count
-   FROM (recipes r
-     LEFT JOIN recipe_products p ON ((r.id = p.recipe_id)))
-  GROUP BY r.id, r.name;
-
-
---
 -- Name: recipe_product_details; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -169,6 +145,34 @@ CREATE VIEW recipe_product_details AS
     (p.proteins * r.amount) AS proteins
    FROM (recipe_products r
      JOIN products p ON ((p.id = r.product_id)));
+
+
+--
+-- Name: recipes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE recipes (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+--
+-- Name: recipe_details; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW recipe_details AS
+ SELECT r.id,
+    r.name,
+    count(p.product_id) AS products,
+    sum(p.calories) AS calories,
+    sum(p.fat) AS fat,
+    sum(p.carbs) AS carbs,
+    sum(p.proteins) AS proteins
+   FROM (recipes r
+     LEFT JOIN recipe_product_details p ON ((r.id = p.recipe_id)))
+  GROUP BY r.id, r.name;
 
 
 --
@@ -662,3 +666,5 @@ INSERT INTO schema_migrations (version) VALUES ('20150123171037');
 INSERT INTO schema_migrations (version) VALUES ('20150123172720');
 
 INSERT INTO schema_migrations (version) VALUES ('20150123180654');
+
+INSERT INTO schema_migrations (version) VALUES ('20150123185420');

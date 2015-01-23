@@ -6,15 +6,25 @@ ActiveAdmin.register Recipe do
     current_user
   end
 
+  index do
+    selectable_column
+    id_column
+    column :name
+    column :products do |r| r.details.products end
+    column :calories do |r| r.details.calories end
+    column :fat do |r| r.details.fat end
+    column :carbs do |r| r.details.carbs end
+    column :proteins do |r| r.details.proteins end
+    actions
+  end
+
   show do
     attributes_table do
-      row :products do
-        5
-      end
-      row :calories do
-        #recipe.details.calories
-        500
-      end
+      row :products do recipe.details.products end
+      row :calories do recipe.details.calories end
+      row :fat do recipe.details.fat end
+      row :carbs do recipe.details.carbs end
+      row :proteins do recipe.details.proteins end
     end
 
     panel "Products" do
