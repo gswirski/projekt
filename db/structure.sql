@@ -248,21 +248,6 @@ ALTER SEQUENCE recipes_id_seq OWNED BY recipes.id;
 
 
 --
--- Name: recipes_with_nutrition; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE recipes_with_nutrition (
-    id integer,
-    user_id integer,
-    name character varying(255),
-    calories numeric,
-    fat numeric,
-    carbs numeric,
-    proteins numeric
-);
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -591,24 +576,6 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
--- Name: _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE RULE "_RETURN" AS
-    ON SELECT TO recipes_with_nutrition DO INSTEAD  SELECT recipes.id,
-    recipes.user_id,
-    recipes.name,
-    COALESCE(sum((recipe_products.amount * products.calories)), (0)::numeric) AS calories,
-    COALESCE(sum((recipe_products.amount * products.fat)), (0)::numeric) AS fat,
-    COALESCE(sum((recipe_products.amount * products.carbs)), (0)::numeric) AS carbs,
-    COALESCE(sum((recipe_products.amount * products.proteins)), (0)::numeric) AS proteins
-   FROM ((recipes
-     LEFT JOIN recipe_products ON ((recipes.id = recipe_products.recipe_id)))
-     LEFT JOIN products ON ((products.id = recipe_products.product_id)))
-  GROUP BY recipes.id;
-
-
---
 -- Name: meal_products_meal_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -727,3 +694,5 @@ INSERT INTO schema_migrations (version) VALUES ('20150123191404');
 INSERT INTO schema_migrations (version) VALUES ('20150123192755');
 
 INSERT INTO schema_migrations (version) VALUES ('20150123194218');
+
+INSERT INTO schema_migrations (version) VALUES ('20150123211104');
