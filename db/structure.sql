@@ -139,6 +139,19 @@ CREATE TABLE recipes (
 
 
 --
+-- Name: recipe_details; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW recipe_details AS
+ SELECT r.id,
+    r.name,
+    count(p.product_id) AS count
+   FROM (recipes r
+     LEFT JOIN recipe_products p ON ((r.id = p.recipe_id)))
+  GROUP BY r.id, r.name;
+
+
+--
 -- Name: recipes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -480,16 +493,16 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 --
 
 CREATE RULE "_RETURN" AS
-    ON SELECT TO recipes_with_nutrition DO INSTEAD  SELECT recipes.id, 
-    recipes.user_id, 
-    recipes.name, 
-    COALESCE(sum((recipe_products.amount * products.calories)), (0)::numeric) AS calories, 
-    COALESCE(sum((recipe_products.amount * products.fat)), (0)::numeric) AS fat, 
-    COALESCE(sum((recipe_products.amount * products.carbs)), (0)::numeric) AS carbs, 
+    ON SELECT TO recipes_with_nutrition DO INSTEAD  SELECT recipes.id,
+    recipes.user_id,
+    recipes.name,
+    COALESCE(sum((recipe_products.amount * products.calories)), (0)::numeric) AS calories,
+    COALESCE(sum((recipe_products.amount * products.fat)), (0)::numeric) AS fat,
+    COALESCE(sum((recipe_products.amount * products.carbs)), (0)::numeric) AS carbs,
     COALESCE(sum((recipe_products.amount * products.proteins)), (0)::numeric) AS proteins
    FROM ((recipes
-   LEFT JOIN recipe_products ON ((recipes.id = recipe_products.recipe_id)))
-   LEFT JOIN products ON ((products.id = recipe_products.product_id)))
+     LEFT JOIN recipe_products ON ((recipes.id = recipe_products.recipe_id)))
+     LEFT JOIN products ON ((products.id = recipe_products.product_id)))
   GROUP BY recipes.id;
 
 
@@ -596,3 +609,5 @@ INSERT INTO schema_migrations (version) VALUES ('20141221121131');
 INSERT INTO schema_migrations (version) VALUES ('20141221130720');
 
 INSERT INTO schema_migrations (version) VALUES ('20141221131345');
+
+INSERT INTO schema_migrations (version) VALUES ('20150122211732');
