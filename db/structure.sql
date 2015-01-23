@@ -336,6 +336,22 @@ ALTER TABLE ONLY weights ALTER COLUMN id SET DEFAULT nextval('weights_id_seq'::r
 
 
 --
+-- Name: meal_products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY meal_products
+    ADD CONSTRAINT meal_products_pkey PRIMARY KEY (meal_id, product_id);
+
+
+--
+-- Name: meal_recipes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY meal_recipes
+    ADD CONSTRAINT meal_recipes_pkey PRIMARY KEY (meal_id, recipe_id);
+
+
+--
 -- Name: meals_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -349,6 +365,14 @@ ALTER TABLE ONLY meals
 
 ALTER TABLE ONLY products
     ADD CONSTRAINT products_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: recipe_products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY recipe_products
+    ADD CONSTRAINT recipe_products_pkey PRIMARY KEY (recipe_id, product_id);
 
 
 --
@@ -611,3 +635,5 @@ INSERT INTO schema_migrations (version) VALUES ('20141221130720');
 INSERT INTO schema_migrations (version) VALUES ('20141221131345');
 
 INSERT INTO schema_migrations (version) VALUES ('20150122211732');
+
+INSERT INTO schema_migrations (version) VALUES ('20150123171037');
