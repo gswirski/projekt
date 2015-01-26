@@ -588,7 +588,7 @@ ALTER TABLE ONLY meal_products
 --
 
 ALTER TABLE ONLY meal_products
-    ADD CONSTRAINT meal_products_product_id_fk FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meal_products_product_id_fk FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT;
 
 
 --
@@ -604,7 +604,7 @@ ALTER TABLE ONLY meal_recipes
 --
 
 ALTER TABLE ONLY meal_recipes
-    ADD CONSTRAINT meal_recipes_recipe_id_fk FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE;
+    ADD CONSTRAINT meal_recipes_recipe_id_fk FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE RESTRICT;
 
 
 --
@@ -628,7 +628,7 @@ ALTER TABLE ONLY products
 --
 
 ALTER TABLE ONLY recipe_products
-    ADD CONSTRAINT recipe_products_product_id_fk FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE;
+    ADD CONSTRAINT recipe_products_product_id_fk FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT;
 
 
 --
@@ -696,3 +696,5 @@ INSERT INTO schema_migrations (version) VALUES ('20150123192755');
 INSERT INTO schema_migrations (version) VALUES ('20150123194218');
 
 INSERT INTO schema_migrations (version) VALUES ('20150123211104');
+
+INSERT INTO schema_migrations (version) VALUES ('20150126115445');
